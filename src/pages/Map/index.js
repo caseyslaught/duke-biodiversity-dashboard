@@ -1,43 +1,92 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Flex } from "@chakra-ui/react";
-import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
+import { Box, Flex } from "@chakra-ui/react";
+import esriConfig from "@arcgis/core/config";
+import Map from "@arcgis/core/Map";
+import Point from "@arcgis/core/geometry/Point";
+import SceneView from "@arcgis/core/views/SceneView";
+import TileLayer from "@arcgis/core/layers/TileLayer";
+import * as watchUtils from "@arcgis/core/core/watchUtils";
 
-mapboxgl.accessToken =
-  "pk.eyJ1IjoiY2FyYWNhbCIsImEiOiJja2huM3MxZGYwOHAwMndrOGM2cDB6OW5zIn0.qD5DHPfsRTV2G9aEi30KCw";
+import useLocalStorage from "../../hooks/useLocalStorage";
+
+esriConfig.apiKey =
+  "AAPK2551eab2c5a44d1984a7226b4fd400deFAhr5N7NHB1ImvFiQrNVAf1LxZd0nyIu1EzYGjiPA1nsVuMlf0dw7NInOEaLMZYm";
 
 export default function MapPage() {
-  const mapContainer = useRef(null);
-  const map = useRef(null);
-  const [lng, setLng] = useState(-83.5478);
-  const [lat, setLat] = useState(8.5588);
-  const [zoom, setZoom] = useState(13);
-
-  useEffect(() => {
-    if (map.current) return; // initialize map only once
-    map.current = new mapboxgl.Map({
-      container: mapContainer.current,
-      style: "mapbox://styles/mapbox/satellite-v9",
-      center: [lng, lat],
-      zoom: zoom,
-    });
-  });
-
-  useEffect(() => {
-    if (!map.current) return; // wait for map to initialize
-    map.current.on("move", () => {
-      setLng(map.current.getCenter().lng.toFixed(4));
-      setLat(map.current.getCenter().lat.toFixed(4));
-      setZoom(map.current.getZoom().toFixed(2));
-    });
-  });
-
   return (
     <Flex flex={1}>
-      <div
-        style={{ height: "100%", width: "100%" }}
-        ref={mapContainer}
-        className="map-container"
-      />
+      <MapContainer />
     </Flex>
   );
 }
+
+const MapContainer = () => {
+  const mapRef = useRef();
+  const [lng, setLng] = useLocalStorage("lng", -78.928);
+  const [lat, setLat] = useLocalStorage("lat", 36.0165);
+  const [zoom, setZoom] = useLocalStorage("zoom", 13);
+
+  useEffect(() => {
+    console.log(mapRef.current);
+
+    const map = new Map({
+      basemap: "hybrid",
+    });
+
+    const layer = new TileLayer({
+      url: "https://tiles.arcgis.com/tiles/gNxCsTcw53J7CAhV/arcgis/rest/services/OrthoLayer/MapServer",
+      opacity: 1,
+      visible: true,
+    });
+
+    map.add(layer);
+
+    const view = new SceneView({
+      container: mapRef.current,
+      map: map,
+      center: [lng, lat],
+      zoom: zoom,
+      spatialReference: {
+        wkid: 3857,
+      },
+      constraints: {
+        minZoom: 3,
+        snapToZoom: false,
+      },
+    });
+
+    watchUtils.whenTrue(view, "stationary", () => {
+      // Get the new center of the view only when view is stationary.
+      if (view.center) {
+        setLng(view.center.longitude);
+        setLat(view.center.latitude);
+      }
+
+      if (view.zoom) {
+        setZoom(view.zoom);
+      }
+
+      if (view.extent) {
+        const xmin = view.extent.xmin.toFixed(4);
+        const xmax = view.extent.xmax.toFixed(4);
+        const ymin = view.extent.ymin.toFixed(4);
+        const ymax = view.extent.ymax.toFixed(4);
+        localStorage.setItem(
+          "extent",
+          JSON.stringify({
+            xmin,
+            xmax,
+            ymin,
+            ymax,
+          })
+        );
+      }
+    });
+
+    return () => {
+      view && view.destroy();
+    };
+  }, []);
+
+  return <Box h="100%" w="100%" ref={mapRef} />;
+};

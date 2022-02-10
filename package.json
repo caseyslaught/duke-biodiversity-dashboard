@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@arcgis/core": "^4.22.2",
     "@chakra-ui/react": "^1.8.3",
     "@emotion/react": "11",
     "@emotion/styled": "11",
