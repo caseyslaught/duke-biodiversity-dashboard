@@ -5,6 +5,8 @@ import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-load
 mapboxgl.accessToken =
   "pk.eyJ1IjoiY2FyYWNhbCIsImEiOiJja2huM3MxZGYwOHAwMndrOGM2cDB6OW5zIn0.qD5DHPfsRTV2G9aEi30KCw";
 
+// TODO: move map into a child component and manage state in the parent...
+
 export default function MapPage() {
   const mapContainer = useRef(null);
   const map = useRef(null);

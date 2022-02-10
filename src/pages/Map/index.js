@@ -1,34 +1,51 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import { Box, Flex } from "@chakra-ui/react";
 import esriConfig from "@arcgis/core/config";
 import Map from "@arcgis/core/Map";
-import Point from "@arcgis/core/geometry/Point";
 import SceneView from "@arcgis/core/views/SceneView";
 import TileLayer from "@arcgis/core/layers/TileLayer";
 import * as watchUtils from "@arcgis/core/core/watchUtils";
 
 import useLocalStorage from "../../hooks/useLocalStorage";
 
+import Filters from "./components/Filters";
+
 esriConfig.apiKey =
   "AAPK2551eab2c5a44d1984a7226b4fd400deFAhr5N7NHB1ImvFiQrNVAf1LxZd0nyIu1EzYGjiPA1nsVuMlf0dw7NInOEaLMZYm";
 
 export default function MapPage() {
-  return (
-    <Flex flex={1}>
-      <MapContainer />
-    </Flex>
-  );
-}
-
-const MapContainer = () => {
-  const mapRef = useRef();
   const [lng, setLng] = useLocalStorage("lng", -78.928);
   const [lat, setLat] = useLocalStorage("lat", 36.0165);
   const [zoom, setZoom] = useLocalStorage("zoom", 13);
 
-  useEffect(() => {
-    console.log(mapRef.current);
+  return (
+    <Flex flex={1} position="relative">
+      <Filters />
+      <MapContainer
+        initLng={lng}
+        initLat={lat}
+        initZoom={zoom}
+        setLng={setLng}
+        setLat={setLat}
+        setZoom={setZoom}
+      />
+    </Flex>
+  );
+}
 
+const MapContainer = ({
+  initLng,
+  initLat,
+  initZoom,
+  setLng,
+  setLat,
+  setZoom,
+}) => {
+  const viewRef = useRef();
+  const mapRef = useRef();
+  const mapContainerRef = useRef();
+
+  useEffect(() => {
     const map = new Map({
       basemap: "hybrid",
     });
@@ -42,10 +59,10 @@ const MapContainer = () => {
     map.add(layer);
 
     const view = new SceneView({
-      container: mapRef.current,
+      container: mapContainerRef.current,
       map: map,
-      center: [lng, lat],
-      zoom: zoom,
+      center: [initLng, initLat],
+      zoom: initZoom,
       spatialReference: {
         wkid: 3857,
       },
@@ -55,22 +72,34 @@ const MapContainer = () => {
       },
     });
 
-    watchUtils.whenTrue(view, "stationary", () => {
-      // Get the new center of the view only when view is stationary.
-      if (view.center) {
-        setLng(view.center.longitude);
-        setLat(view.center.latitude);
+    mapRef.current = map;
+    viewRef.current = view;
+
+    return () => {
+      view && view.destroy();
+    };
+  }, [initLng, initLat, initZoom]);
+
+  useEffect(() => {
+    watchUtils.whenTrue(viewRef.current, "stationary", () => {
+      if (viewRef.current.center) {
+        const center = viewRef.current.center;
+        // using setLng with if (viewRef.current) return; does not work.
+        // I do not know why. Maybe something about how map is rendered
+        localStorage.setItem("lng", center.longitude);
+        localStorage.setItem("lat", center.latitude);
       }
 
-      if (view.zoom) {
-        setZoom(view.zoom);
+      if (viewRef.current.zoom) {
+        localStorage.setItem("zoom", viewRef.current.zoom);
       }
 
-      if (view.extent) {
-        const xmin = view.extent.xmin.toFixed(4);
-        const xmax = view.extent.xmax.toFixed(4);
-        const ymin = view.extent.ymin.toFixed(4);
-        const ymax = view.extent.ymax.toFixed(4);
+      if (viewRef.current.extent) {
+        const extent = viewRef.current.extent;
+        const xmin = extent.xmin.toFixed(4);
+        const xmax = extent.xmax.toFixed(4);
+        const ymin = extent.ymin.toFixed(4);
+        const ymax = extent.ymax.toFixed(4);
         localStorage.setItem(
           "extent",
           JSON.stringify({
@@ -82,11 +111,7 @@ const MapContainer = () => {
         );
       }
     });
+  }, [setLng, setLat, setZoom]);
 
-    return () => {
-      view && view.destroy();
-    };
-  }, []);
-
-  return <Box h="100%" w="100%" ref={mapRef} />;
+  return <Box h="100%" w="100%" ref={mapContainerRef} />;
 };
