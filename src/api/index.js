@@ -15,7 +15,9 @@ export const ProtectedAPI = axios.create({
 ProtectedAPI.interceptors.request.use(
   (config) => {
     const currentUser = JSON.parse(window.localStorage.getItem("current_user"));
-    config.headers["Authorization"] = "JWT " + currentUser.accessToken;
+    if (currentUser) {
+      config.headers["Authorization"] = "Bearer " + currentUser.accessToken;
+    }
     return config;
   },
   (error) => {
@@ -31,11 +33,7 @@ ProtectedAPI.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    if (
-      error.response.status === 401 &&
-      error.response.data.code === "token_not_valid" &&
-      !originalRequest._retry
-    ) {
+    if (error.response.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
       const currentUser = await refreshToken();
       if (currentUser) {

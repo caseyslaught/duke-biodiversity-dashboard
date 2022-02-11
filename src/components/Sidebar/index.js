@@ -1,11 +1,11 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import { Box, Flex, Image, Link } from "@chakra-ui/react";
-import { FiActivity, FiList, FiMap, FiMoon } from "react-icons/fi";
+import { Flex, IconButton, Image, Link } from "@chakra-ui/react";
+import { FiActivity, FiList, FiLogOut, FiMap } from "react-icons/fi";
 
 import Logo from "../../assets/images/duke.png";
 
-export default function Sidebar() {
+export default function Sidebar({ setAuthenticated }) {
   const linkConfig = {
     mb: "30px",
     _activeLink: { color: "blue.700" },
@@ -21,7 +21,7 @@ export default function Sidebar() {
       p={4}
       background="white"
       color="gray.400"
-      fontSize="2.8em"
+      fontSize="5xl"
       boxShadow="md"
     >
       <Flex direction="column" align="center">
@@ -39,9 +39,15 @@ export default function Sidebar() {
         </Link>
       </Flex>
 
-      <Box visibility="hidden">
-        <FiMoon />
-      </Box>
+      <IconButton
+        variant="ghost"
+        fontSize="3xl"
+        icon={<FiLogOut />}
+        onClick={() => {
+          localStorage.clear();
+          setAuthenticated(false);
+        }}
+      />
     </Flex>
   );
 }

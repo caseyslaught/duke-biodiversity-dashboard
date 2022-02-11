@@ -7,6 +7,8 @@ import MapPage from "./pages/Map";
 import MetricsPage from "./pages/Metrics";
 
 export default function App() {
+  console.log("app");
+
   return (
     <Routes>
       <Route element={<MainLayout />}>

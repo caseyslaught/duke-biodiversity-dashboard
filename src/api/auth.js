@@ -1,6 +1,6 @@
 import React from "react";
 
-import { PublicAPI } from "./api";
+import { PublicAPI } from "./index";
 
 export const useUser = () => {
   const [user, setUser] = React.useState("pending");
@@ -45,6 +45,7 @@ export const getUser = () => {
 
 export const refreshToken = async () => {
   let currentUser = JSON.parse(localStorage.getItem("current_user"));
+  if (!currentUser) return null;
 
   try {
     const res = await PublicAPI.post("account/refresh/", {
