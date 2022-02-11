@@ -10,6 +10,9 @@
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^12.0.0",
     "@testing-library/user-event": "^13.2.1",
+    "axios": "^0.25.0",
+    "dotenv": "^16.0.0",
+    "env-cmd": "^10.1.0",
     "framer-motion": "5",
     "mapbox-gl": "^2.7.0",
     "react": "^17.0.2",
@@ -20,8 +23,10 @@
     "web-vitals": "^2.1.0"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "env-cmd -f .env.development react-scripts start",
+    "start:production": "env-cmd -f .env.production react-scripts start",
+    "build": "env-cmd -f .env.development react-scripts build",
+    "build:production": "env-cmd -f .env.production react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

@@ -10,8 +10,8 @@ import useLocalStorage from "../../hooks/useLocalStorage";
 
 import Filters from "./components/Filters";
 
-esriConfig.apiKey =
-  "AAPK2551eab2c5a44d1984a7226b4fd400deFAhr5N7NHB1ImvFiQrNVAf1LxZd0nyIu1EzYGjiPA1nsVuMlf0dw7NInOEaLMZYm";
+const { REACT_APP_ARCGIS_API_KEY } = process.env;
+esriConfig.apiKey = REACT_APP_ARCGIS_API_KEY;
 
 export default function MapPage() {
   const [lng, setLng] = useLocalStorage("lng", -78.928);
