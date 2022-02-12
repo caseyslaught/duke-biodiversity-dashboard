@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Box, Flex } from "@chakra-ui/react";
 import esriConfig from "@arcgis/core/config";
 import Map from "@arcgis/core/Map";
@@ -13,14 +13,15 @@ import Filters from "./components/Filters";
 const { REACT_APP_ARCGIS_API_KEY } = process.env;
 esriConfig.apiKey = REACT_APP_ARCGIS_API_KEY;
 
-export default function MapPage() {
+export default function MapPage({ droneObservations }) {
   const [lng, setLng] = useLocalStorage("lng", -78.928);
   const [lat, setLat] = useLocalStorage("lat", 36.0165);
   const [zoom, setZoom] = useLocalStorage("zoom", 13);
+  const [sceneLoaded, setSceneLoaded] = useState(false);
 
   return (
     <Flex flex={1} position="relative">
-      <Filters />
+      {sceneLoaded && <Filters />}
       <MapContainer
         initLng={lng}
         initLat={lat}
@@ -28,6 +29,7 @@ export default function MapPage() {
         setLng={setLng}
         setLat={setLat}
         setZoom={setZoom}
+        setSceneLoaded={setSceneLoaded}
       />
     </Flex>
   );
@@ -40,6 +42,7 @@ const MapContainer = ({
   setLng,
   setLat,
   setZoom,
+  setSceneLoaded,
 }) => {
   const viewRef = useRef();
   const mapRef = useRef();
@@ -72,13 +75,20 @@ const MapContainer = ({
       },
     });
 
+    view
+      .when(() => {
+        console.log("scene loaded");
+        setSceneLoaded(true);
+      })
+      .catch(() => {});
+
     mapRef.current = map;
     viewRef.current = view;
 
     return () => {
       view && view.destroy();
     };
-  }, [initLng, initLat, initZoom]);
+  }, [initLng, initLat, initZoom, setSceneLoaded]);
 
   useEffect(() => {
     watchUtils.whenTrue(viewRef.current, "stationary", () => {

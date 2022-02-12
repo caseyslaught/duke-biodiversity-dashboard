@@ -1,47 +1,4 @@
-import React from "react";
-
 import { PublicAPI } from "./index";
-
-export const useUser = () => {
-  const [user, setUser] = React.useState("pending");
-
-  React.useEffect(() => {
-    const fetchUser = async () => {
-      const currentUserStr = localStorage.getItem("current_user");
-      if (currentUserStr) {
-        const currentUser = JSON.parse(currentUserStr);
-        const millisDifference = new Date().getTime() - currentUser.lastRefresh;
-        if (millisDifference >= currentUser.expiresIn * 1000) {
-          const newUser = await refreshToken();
-          setUser(newUser);
-        } else {
-          setUser(currentUser);
-        }
-      } else {
-        setUser(null);
-      }
-    };
-
-    fetchUser();
-  }, []);
-
-  return user;
-};
-
-export const getUser = () => {
-  const currentUserStr = localStorage.getItem("current_user");
-  if (currentUserStr) {
-    const currentUser = JSON.parse(currentUserStr);
-    const millisDifference = new Date().getTime() - currentUser.lastRefresh;
-    if (millisDifference >= currentUser.expiresIn * 1000) {
-      return refreshToken();
-    } else {
-      return currentUser;
-    }
-  }
-
-  return null;
-};
 
 export const refreshToken = async () => {
   let currentUser = JSON.parse(localStorage.getItem("current_user"));

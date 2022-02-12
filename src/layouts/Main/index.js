@@ -5,11 +5,7 @@ import { Flex } from "@chakra-ui/react";
 import Login from "../../components/Login";
 import Sidebar from "../../components/Sidebar";
 
-import useAuthenticated from "../../hooks/useAuthenticated";
-
-export default function MainLayout() {
-  const [authenticated, setAuthenticated] = useAuthenticated();
-
+export default function MainLayout({ authenticated, setAuthenticated }) {
   return (
     <Flex h="100%">
       <Login isOpen={!authenticated} setAuthenticated={setAuthenticated} />

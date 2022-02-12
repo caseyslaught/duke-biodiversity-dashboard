@@ -10,17 +10,15 @@ const useAuthenticated = () => {
       try {
         const res = await ProtectedAPI.get("account/auth_test");
         if (res.status === 200) {
-          if (!authenticated) setAuthenticated(true);
+          setAuthenticated(true);
         }
       } catch (error) {
-        if (authenticated) setAuthenticated(false);
+        setAuthenticated(false);
       }
     }
 
-    // see if we can skip this if false...running 2x initially
-    // use ref or something
     fetchData();
-  });
+  }, []);
 
   return [authenticated, setAuthenticated];
 };
