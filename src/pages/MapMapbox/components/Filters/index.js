@@ -8,19 +8,17 @@ import {
   Flex,
   HStack,
   IconButton,
-  Radio,
-  RadioGroup,
   VStack,
   useTheme,
 } from "@chakra-ui/react";
 
 export default function Filters({
+  allDisplays,
+  setShowHeatmap,
+  setShowObs,
   allCategories,
   allLevels,
   allMethods,
-  display,
-  setDisplay,
-  filters,
   setFilters,
 }) {
   return (
@@ -37,17 +35,25 @@ export default function Filters({
       borderRadius="8px"
       minWidth="250px"
     >
-      <FilterSection title="Display" initialExpanded={true}>
-        <RadioGroup value={display} onChange={setDisplay}>
-          <VStack spacing={2} align="flex-start" ps={1}>
-            <Radio value="heatmap">Heatmap</Radio>
-            <Radio value="highlights">Highlights</Radio>
-          </VStack>
-        </RadioGroup>
-      </FilterSection>
+      <FilterCheckboxes
+        title="Displays"
+        initialExpanded={true}
+        defaultValues={allDisplays}
+        onChange={(newDisplays) => {
+          setShowHeatmap(newDisplays.includes("Heatmap"));
+          setShowObs(newDisplays.includes("Observations"));
+        }}
+      >
+        {allDisplays.map((dis) => (
+          <Checkbox key={dis} value={dis}>
+            {dis}
+          </Checkbox>
+        ))}
+      </FilterCheckboxes>
       <FilterSection title="Filters">
         <FilterCheckboxes
           title="Category"
+          initialExpanded={false}
           defaultValues={allCategories}
           onChange={(newCategories) => {
             setFilters((oldFilters) => ({
@@ -64,6 +70,7 @@ export default function Filters({
         </FilterCheckboxes>
         <FilterCheckboxes
           title="Collection method"
+          initialExpanded={false}
           defaultValues={allMethods}
           onChange={(newMethods) => {
             setFilters((oldFilters) => ({
@@ -80,6 +87,7 @@ export default function Filters({
         </FilterCheckboxes>
         <FilterCheckboxes
           title="Forest layer"
+          initialExpanded={false}
           defaultValues={allLevels}
           onChange={(newLevels) => {
             setFilters((oldFilters) => ({
@@ -99,8 +107,14 @@ export default function Filters({
   );
 }
 
-const FilterCheckboxes = ({ title, defaultValues, onChange, children }) => {
-  const [expanded, setExpanded] = useState(false);
+const FilterCheckboxes = ({
+  title,
+  initialExpanded,
+  defaultValues,
+  onChange,
+  children,
+}) => {
+  const [expanded, setExpanded] = useState(initialExpanded);
   const theme = useTheme();
 
   return (

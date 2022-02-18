@@ -10,12 +10,15 @@ import Map from "./components/Map";
 mapboxgl.accessToken =
   "pk.eyJ1IjoiY2FyYWNhbCIsImEiOiJja2huM3MxZGYwOHAwMndrOGM2cDB6OW5zIn0.qD5DHPfsRTV2G9aEi30KCw";
 
+const allDisplays = ["Heatmap", "Observations"];
 const allCategories = ["Birds", "Insects", "Mammals", "Plants"];
 const allMethods = ["Acoustic", "Camera trap", "DNA", "Drone"];
 const allLevels = ["Floor", "Understory", "Canopy", "Emergent"];
 
 export default function MapPage({ authenticated }) {
-  const [display, setDisplay] = useState("highlights");
+  const [showHeatmap, setShowHeatmap] = useState(true);
+  const [showObs, setShowObs] = useState(true);
+
   const [filters, setFilters] = useState({
     categories: allCategories.join(),
     methods: allMethods.join(),
@@ -27,15 +30,20 @@ export default function MapPage({ authenticated }) {
   return (
     <Flex flex={1} position="relative">
       <Filters
-        filters={filters}
+        allDisplays={allDisplays}
+        setShowHeatmap={setShowHeatmap}
+        setShowObs={setShowObs}
         setFilters={setFilters}
         allCategories={allCategories}
         allLevels={allLevels}
         allMethods={allMethods}
-        display={display}
-        setDisplay={setDisplay}
       />
-      <Map observations={observations} />
+      <Map
+        showHeatmap={showHeatmap}
+        showObs={showObs}
+        observations={observations}
+        allMethods={allMethods}
+      />
     </Flex>
   );
 }
