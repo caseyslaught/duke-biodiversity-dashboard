@@ -38,7 +38,7 @@ ProtectedAPI.interceptors.response.use(
       const currentUser = await refreshToken();
       if (currentUser) {
         axios.defaults.headers.common["Authorization"] =
-          "JWT " + currentUser.accessToken;
+          "Bearer " + currentUser.accessToken;
         return ProtectedAPI(originalRequest);
       }
     }

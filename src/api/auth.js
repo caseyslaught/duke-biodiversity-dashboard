@@ -10,8 +10,7 @@ export const refreshToken = async () => {
     });
 
     if (res.status === 200) {
-      currentUser.accessToken = res.data.access_token;
-      currentUser.lastRefresh = new Date().getTime();
+      currentUser.accessToken = res.data.access;
       localStorage.setItem("current_user", JSON.stringify(currentUser));
       return currentUser;
     }

@@ -14,13 +14,15 @@ import {
   useTheme,
 } from "@chakra-ui/react";
 
-const categories = ["Birds", "Insects", "Mammals", "Plants"];
-const layers = ["Floor", "Understory", "Canopy", "Emergent"];
-const methods = ["Acoustic", "Camera trap", "DNA", "Drone"];
-
-export default function Filters() {
-  const [display, setDisplay] = useState("highlights");
-
+export default function Filters({
+  allCategories,
+  allLevels,
+  allMethods,
+  display,
+  setDisplay,
+  filters,
+  setFilters,
+}) {
   return (
     <VStack
       spacing={1}
@@ -44,24 +46,51 @@ export default function Filters() {
         </RadioGroup>
       </FilterSection>
       <FilterSection title="Filters">
-        <FilterCheckboxes title="Category" defaultValues={categories}>
-          {categories.map((cat) => (
+        <FilterCheckboxes
+          title="Category"
+          defaultValues={allCategories}
+          onChange={(newCategories) => {
+            setFilters((oldFilters) => ({
+              ...oldFilters,
+              categories: newCategories.join(),
+            }));
+          }}
+        >
+          {allCategories.map((cat) => (
             <Checkbox key={cat} value={cat}>
               {cat}
             </Checkbox>
           ))}
         </FilterCheckboxes>
-        <FilterCheckboxes title="Collection method" defaultValues={methods}>
-          {methods.map((method) => (
+        <FilterCheckboxes
+          title="Collection method"
+          defaultValues={allMethods}
+          onChange={(newMethods) => {
+            setFilters((oldFilters) => ({
+              ...oldFilters,
+              methods: newMethods.join(),
+            }));
+          }}
+        >
+          {allMethods.map((method) => (
             <Checkbox key={method} value={method}>
               {method}
             </Checkbox>
           ))}
         </FilterCheckboxes>
-        <FilterCheckboxes title="Forest layer" defaultValues={layers}>
-          {layers.map((layer) => (
-            <Checkbox key={layer} value={layer}>
-              {layer}
+        <FilterCheckboxes
+          title="Forest layer"
+          defaultValues={allLevels}
+          onChange={(newLevels) => {
+            setFilters((oldFilters) => ({
+              ...oldFilters,
+              levels: newLevels.join(),
+            }));
+          }}
+        >
+          {allLevels.map((level) => (
+            <Checkbox key={level} value={level}>
+              {level}
             </Checkbox>
           ))}
         </FilterCheckboxes>
@@ -70,7 +99,7 @@ export default function Filters() {
   );
 }
 
-const FilterCheckboxes = ({ title, defaultValues, children }) => {
+const FilterCheckboxes = ({ title, defaultValues, onChange, children }) => {
   const [expanded, setExpanded] = useState(false);
   const theme = useTheme();
 
@@ -99,7 +128,7 @@ const FilterCheckboxes = ({ title, defaultValues, children }) => {
         )}
       </Flex>
       <Collapse in={expanded}>
-        <CheckboxGroup defaultValue={defaultValues}>
+        <CheckboxGroup defaultValue={defaultValues} onChange={onChange}>
           <VStack align="flex-start" ps={3} mb={2} w="100%">
             {children}
           </VStack>

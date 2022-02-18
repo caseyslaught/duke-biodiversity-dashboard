@@ -93,51 +93,53 @@ export default function Login({ isOpen, setAuthenticated }) {
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>Log in</ModalHeader>
-        <ModalBody>
-          <VStack spacing={4}>
-            <InputGroup>
-              <InputLeftElement
-                pointerEvents="none"
-                children={<FiMail color={theme.colors.gray[400]} />}
-              />
-              <Input
-                placeholder="Email"
-                type="email"
-                value={email}
-                disabled={loading}
-                onChange={handleEmailChange}
-              />
-            </InputGroup>
+        <form>
+          <ModalBody>
+            <VStack spacing={4}>
+              <InputGroup>
+                <InputLeftElement
+                  pointerEvents="none"
+                  children={<FiMail color={theme.colors.gray[400]} />}
+                />
+                <Input
+                  placeholder="Email"
+                  type="email"
+                  value={email}
+                  disabled={loading}
+                  onChange={handleEmailChange}
+                />
+              </InputGroup>
 
-            <InputGroup>
-              <InputLeftElement
-                pointerEvents="none"
-                children={<FiLock color={theme.colors.gray[400]} />}
-              />
-              <Input
-                placeholder="Password"
-                type="password"
-                value={password}
-                disabled={loading}
-                onChange={handlePasswordChange}
-              />
-            </InputGroup>
-          </VStack>
-        </ModalBody>
-        <ModalFooter>
-          <VStack align="flex-end">
-            <Collapse in={error && error.length > 0}>
-              <Box color="red.700">{error}</Box>
-            </Collapse>
-            <Button
-              disabled={disabled || loading}
-              isLoading={loading}
-              onClick={handleSubmit}
-            >
-              Submit
-            </Button>
-          </VStack>
-        </ModalFooter>
+              <InputGroup>
+                <InputLeftElement
+                  pointerEvents="none"
+                  children={<FiLock color={theme.colors.gray[400]} />}
+                />
+                <Input
+                  placeholder="Password"
+                  type="password"
+                  value={password}
+                  disabled={loading}
+                  onChange={handlePasswordChange}
+                />
+              </InputGroup>
+            </VStack>
+          </ModalBody>
+          <ModalFooter>
+            <VStack align="flex-end">
+              <Collapse in={error && error.length > 0}>
+                <Box color="red.700">{error}</Box>
+              </Collapse>
+              <Button
+                disabled={disabled || loading}
+                isLoading={loading}
+                onClick={handleSubmit}
+              >
+                Submit
+              </Button>
+            </VStack>
+          </ModalFooter>
+        </form>
       </ModalContent>
     </Modal>
   );
