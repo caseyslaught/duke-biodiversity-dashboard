@@ -1,13 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Flex } from "@chakra-ui/react";
-import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
 
+import MapFilter from "../../components/MapFilter";
 import useObservations from "../../hooks/useObservations";
 
-import Filters from "./components/Filters";
 import Map from "./components/Map";
-
-mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_TOKEN;
 
 const allDisplays = ["Heatmap", "Observations"];
 const allCategories = ["Birds", "Insects", "Mammals", "Plants"];
@@ -28,7 +25,7 @@ export default function MapPage({ authenticated }) {
 
   return (
     <Flex flex={1} position="relative">
-      <Filters
+      <MapFilter
         allDisplays={allDisplays}
         setShowHeatmap={setShowHeatmap}
         setShowObs={setShowObs}

@@ -40,7 +40,6 @@ export default function Map({
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
       style: "mapbox://styles/mapbox/satellite-v9",
-      //style: "mapbox://styles/mapbox/light-v10",
       center: [lng, lat],
       zoom: zoom,
     });
@@ -74,6 +73,24 @@ export default function Map({
       setLat(map.current.getCenter().lat.toFixed(4));
       setZoom(map.current.getZoom().toFixed(2));
     });
+
+    map.current.on("click", "Drone", (e) => {
+      // Copy coordinates array.
+      const coordinates = e.features[0].geometry.coordinates.slice();
+      const description = e.features[0].properties.description;
+
+      // Ensure that if the map is zoomed out such that multiple
+      // copies of the feature are visible, the popup appears
+      // over the copy being pointed to.
+      while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+        coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+      }
+
+      new mapboxgl.Popup()
+        .setLngLat(coordinates)
+        .setHTML(description)
+        .addTo(map);
+    });
   });
 
   // update geojson
@@ -89,7 +106,10 @@ export default function Map({
             type: "Point",
             coordinates: [obs.longitude, obs.latitude],
           },
-          properties: obs,
+          properties: {
+            ...obs,
+            description: `<strong>hello!</strong>`,
+          },
         };
 
         methodFeatures.push(feat);

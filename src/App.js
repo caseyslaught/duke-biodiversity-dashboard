@@ -6,7 +6,9 @@ import useAuthenticated from "./hooks/useAuthenticated";
 import MainLayout from "./layouts/Main";
 import ActivityPage from "./pages/Activity";
 // import MapPage from "./pages/Map";
-import MapPage from "./pages/MapMapbox";
+//import MapPage from "./pages/MapMapbox";
+import MapPage from "./pages/MapMapboxReact";
+
 import MetricsPage from "./pages/Metrics";
 
 export default function App() {
