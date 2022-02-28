@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import { BrowserRouter } from "react-router-dom";
 import { extendTheme, ChakraProvider, ColorModeScript } from "@chakra-ui/react";
 
-import "@arcgis/core/assets/esri/themes/light/main.css";
+//import "@arcgis/core/assets/esri/themes/light/main.css";
 import "mapbox-gl/dist/mapbox-gl.css";
 
 import App from "./App";

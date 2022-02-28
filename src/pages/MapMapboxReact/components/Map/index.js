@@ -1,9 +1,8 @@
+/* eslint import/no-webpack-loader-syntax: off */
 import { useEffect, useRef, useState } from "react";
-// eslint-disable-next-line import/no-webpack-loader-syntax
-import MapboxWorker from "worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker";
-import mapboxgl from "mapbox-gl/dist/mapbox-gl-csp";
 
 import Map, { Layer, Source } from "react-map-gl";
+import mapboxgl from "mapbox-gl";
 
 import useLocalStorage from "../../../../hooks/useLocalStorage";
 
@@ -11,7 +10,8 @@ import CustomMarker from "../CustomMarker";
 import CustomPopup from "../CustomPopup";
 import { heatmapLayer } from "./style";
 
-mapboxgl.workerClass = MapboxWorker;
+mapboxgl.workerClass =
+  require("worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker").default;
 
 const MAPBOX_TOKEN = process.env.REACT_APP_MAPBOX_TOKEN;
 
