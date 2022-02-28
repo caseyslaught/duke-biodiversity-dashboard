@@ -1,11 +1,7 @@
 import { Badge, Box, Image, Table, Tbody, Tr, Td } from "@chakra-ui/react";
 import { Popup } from "react-map-gl";
 
-const config = {
-  Drone: {
-    color: "blue",
-  },
-};
+import style from "../style";
 
 const CustomPopup = ({ data, setPopupData }) => {
   const {
@@ -27,7 +23,7 @@ const CustomPopup = ({ data, setPopupData }) => {
       onClose={() => setPopupData(null)}
     >
       <Box position="relative">
-        <Badge colorScheme={config[method].color} mb={1}>
+        <Badge colorScheme={style[method].colorScheme} mb={1}>
           {method}
         </Badge>
         <Table variant="simple" size="sm" mb={2}>

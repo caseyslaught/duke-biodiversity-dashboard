@@ -19,10 +19,6 @@ const MapboxMap = ({ showHeatmap, showObs, observations, allMethods }) => {
   const mapRef = useRef();
 
   useEffect(() => {
-    console.log(popupData);
-  }, [popupData]);
-
-  useEffect(() => {
     const allFeatures = [];
     const newMarkers = [];
     for (const method in observations) {

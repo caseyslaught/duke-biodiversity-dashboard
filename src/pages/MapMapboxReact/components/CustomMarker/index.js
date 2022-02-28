@@ -1,18 +1,11 @@
 import { Circle, Icon } from "@chakra-ui/react";
-import { FaHelicopter } from "react-icons/fa";
 import { Marker } from "react-map-gl";
 
-const config = {
-  Drone: {
-    color: "blue.600",
-    icon: FaHelicopter,
-  },
-};
+import style from "../style";
 
 const CustomMarker = ({ data, setPopupData, method }) => {
   const { longitude, latitude } = data;
-
-  const { color, icon } = config[method];
+  const { color, icon } = style[method];
 
   return (
     <Marker
@@ -24,8 +17,8 @@ const CustomMarker = ({ data, setPopupData, method }) => {
         e.originalEvent.stopPropagation();
       }}
     >
-      <Circle bg="white" size="36px" boxShadow="inset 0 0 5px #000000">
-        <Icon as={icon} color={color} fontSize="2em" />
+      <Circle bg="white" size="36px" boxShadow="inset 0 0 5px rgba(0,0,0,.5)">
+        <Icon as={icon} color={color} fontSize="1.8em" />
       </Circle>
     </Marker>
   );
