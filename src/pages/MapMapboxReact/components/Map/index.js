@@ -1,4 +1,8 @@
 import { useEffect, useRef, useState } from "react";
+// eslint-disable-next-line import/no-webpack-loader-syntax
+import MapboxWorker from "worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker";
+import mapboxgl from "mapbox-gl/dist/mapbox-gl-csp";
+
 import Map, { Layer, Source } from "react-map-gl";
 
 import useLocalStorage from "../../../../hooks/useLocalStorage";
@@ -6,6 +10,8 @@ import useLocalStorage from "../../../../hooks/useLocalStorage";
 import CustomMarker from "../CustomMarker";
 import CustomPopup from "../CustomPopup";
 import { heatmapLayer } from "./style";
+
+mapboxgl.workerClass = MapboxWorker;
 
 const MAPBOX_TOKEN = process.env.REACT_APP_MAPBOX_TOKEN;
 
@@ -76,7 +82,7 @@ const MapboxMap = ({ showHeatmap, showObs, observations, allMethods }) => {
       </Source>
 
       {showHeatmap && (
-        <Source type="geojson" data={allGeojson}>
+        <Source id="allObservations" type="geojson" data={allGeojson}>
           <Layer {...heatmapLayer} />
         </Source>
       )}
