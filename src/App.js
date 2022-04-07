@@ -30,7 +30,10 @@ export default function App() {
           element={<ActivityPage authenticated={authenticated} />}
         />
         <Route path="map" element={<MapPage authenticated={authenticated} />} />
-        <Route path="metrics" element={<MetricsPage />} />
+        <Route
+          path="report"
+          element={<MetricsPage authenticated={authenticated} />}
+        />
         <Route path="*" element={<NoMatch />} />
       </Route>
     </Routes>

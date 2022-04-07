@@ -7,7 +7,7 @@ import Sidebar from "../../components/Sidebar";
 
 export default function MainLayout({ authenticated, setAuthenticated }) {
   return (
-    <Flex h="100%">
+    <Flex h="100%" pl="80px">
       <Login isOpen={!authenticated} setAuthenticated={setAuthenticated} />
       <Sidebar setAuthenticated={setAuthenticated} />
       <Outlet context={[authenticated]} />

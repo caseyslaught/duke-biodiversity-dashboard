@@ -21,6 +21,7 @@ import {
 
 export default function Filters({
   allDisplays,
+  setShowFlights,
   setShowHeatmap,
   setShowObs,
   allCategories,
@@ -48,6 +49,7 @@ export default function Filters({
         initialExpanded={true}
         defaultValues={allDisplays}
         onChange={(newDisplays) => {
+          setShowFlights(newDisplays.includes("Flights"));
           setShowHeatmap(newDisplays.includes("Heatmap"));
           setShowObs(newDisplays.includes("Observations"));
         }}

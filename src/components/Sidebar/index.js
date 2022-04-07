@@ -13,6 +13,9 @@ export default function Sidebar({ setAuthenticated }) {
 
   return (
     <Flex
+      position="fixed"
+      top="0"
+      left="0"
       direction="column"
       align="center"
       justify="space-between"
@@ -34,7 +37,7 @@ export default function Sidebar({ setAuthenticated }) {
         <Link as={NavLink} to="/map" {...linkConfig}>
           <FiMap />
         </Link>
-        <Link as={NavLink} to="/metrics" {...linkConfig}>
+        <Link as={NavLink} to="/report" {...linkConfig}>
           <FiActivity />
         </Link>
       </Flex>

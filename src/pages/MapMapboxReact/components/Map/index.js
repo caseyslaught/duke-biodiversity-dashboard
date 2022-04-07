@@ -15,7 +15,14 @@ mapboxgl.workerClass =
 
 const MAPBOX_TOKEN = process.env.REACT_APP_MAPBOX_TOKEN;
 
-const MapboxMap = ({ showHeatmap, showObs, observations, allMethods }) => {
+const MapboxMap = ({
+  showFlights,
+  showHeatmap,
+  showObs,
+  flights,
+  observations,
+  allMethods,
+}) => {
   const [lng, setLng] = useLocalStorage("lng", -78.928);
   const [lat, setLat] = useLocalStorage("lat", 36.0165);
   const [zoom, setZoom] = useLocalStorage("zoom", 13);
@@ -23,6 +30,12 @@ const MapboxMap = ({ showHeatmap, showObs, observations, allMethods }) => {
   const [popupData, setPopupData] = useState();
   const [markers, setMarkers] = useState([]);
   const mapRef = useRef();
+
+  // add flights as layer...
+
+  useEffect(() => {
+    console.log(flights);
+  }, [flights]);
 
   useEffect(() => {
     const allFeatures = [];
@@ -75,10 +88,16 @@ const MapboxMap = ({ showHeatmap, showObs, observations, allMethods }) => {
       }}
       style={{ width: "100%", height: "100%" }}
       mapStyle="mapbox://styles/mapbox/satellite-v9"
+      //mapStyle="mapbox://styles/mapbox/light-v8"
       mapboxAccessToken={MAPBOX_TOKEN}
     >
+      {/* TODO: programmatically get layers */}
       <Source id="oval" type="raster" url="mapbox://caracal.6dxxzba8">
         <Layer id="oval" source="oval" type="raster" />
+      </Source>
+
+      <Source id="crash" type="raster" url="mapbox://caracal.3pedi9q0">
+        <Layer id="crash" source="crash" type="raster" />
       </Source>
 
       {showHeatmap && (
@@ -86,6 +105,26 @@ const MapboxMap = ({ showHeatmap, showObs, observations, allMethods }) => {
           <Layer {...heatmapLayer} />
         </Source>
       )}
+
+      {showFlights &&
+        flights.map((flight) => (
+          <Source
+            key={flight.uid}
+            id={`flight-${flight.uid}`}
+            type="geojson"
+            data={flight.geojson}
+          >
+            <Layer
+              id={`flight-${flight.uid}`}
+              type="line"
+              source={`flight-${flight.uid}`}
+              paint={{
+                "line-color": "#9119b3",
+                "line-width": 3,
+              }}
+            />
+          </Source>
+        ))}
 
       {showObs && markers}
       {showObs && popupData && (
